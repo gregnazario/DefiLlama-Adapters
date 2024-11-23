@@ -1,0 +1,26 @@
+const {function_view} = require("../helper/chain/aptos");
+
+async function getAllMarkets() {
+    // This function will get all markets and the associated TVL in APT
+    const registry = await function_view({
+        functionStr: "0xface729284ae5729100b3a9ad7f7cc025ea09739cd6e7252aff0beb53619cafe::emojicoin_dot_fun::registry_view",
+        args: [],
+        type_arguments: []
+    })
+
+    return registry.total_value_locked.value
+}
+
+async function tvl(api) {
+    const tvl_amount = await getAllMarkets();
+    api.add("0x1::aptos_coin::AptosCoin", tvl_amount);
+}
+
+module.exports = {
+    timetravel: false,
+    methodology:
+        "Aggregates TVL in all pools in Emojicoin.fun",
+    aptos: {
+        tvl,
+    },
+};
